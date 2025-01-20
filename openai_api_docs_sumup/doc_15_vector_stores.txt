@@ -1,0 +1,390 @@
+Vector StoresBeta
+Vector stores are used to store files for use by the file_search tool.
+
+Related guide: File Search
+
+Create vector storeBeta
+post
+
+https://api.openai.com/v1/vector_stores
+Create a vector store.
+
+Request body
+file_ids
+array
+
+Optional
+A list of File IDs that the vector store should use. Useful for tools like file_search that can access files.
+
+name
+string
+
+Optional
+The name of the vector store.
+
+expires_after
+object
+
+Optional
+The expiration policy for a vector store.
+
+
+Show properties
+chunking_strategy
+object
+
+Optional
+The chunking strategy used to chunk the file(s). If not set, will use the auto strategy. Only applicable if file_ids is non-empty.
+
+
+Show possible types
+metadata
+map
+
+Optional
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+Returns
+A vector store object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store = client.beta.vector_stores.create(
+  name="Support FAQ"
+)
+print(vector_store)
+```
+
+```python
+# Response
+{
+  "id": "vs_abc123",
+  "object": "vector_store",
+  "created_at": 1699061776,
+  "name": "Support FAQ",
+  "bytes": 139920,
+  "file_counts": {
+    "in_progress": 0,
+    "completed": 3,
+    "failed": 0,
+    "cancelled": 0,
+    "total": 3
+  }
+}
+```
+
+List vector storesBeta
+get
+
+https://api.openai.com/v1/vector_stores
+Returns a list of vector stores.
+
+Query parameters
+limit
+integer
+
+Optional
+Defaults to 20
+A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+
+order
+string
+
+Optional
+Defaults to desc
+Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+
+after
+string
+
+Optional
+A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+
+before
+string
+
+Optional
+A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+
+Returns
+A list of vector store objects.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_stores = client.beta.vector_stores.list()
+print(vector_stores)
+```
+
+```python
+# Response
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "vs_abc123",
+      "object": "vector_store",
+      "created_at": 1699061776,
+      "name": "Support FAQ",
+      "bytes": 139920,
+      "file_counts": {
+        "in_progress": 0,
+        "completed": 3,
+        "failed": 0,
+        "cancelled": 0,
+        "total": 3
+      }
+    },
+    {
+      "id": "vs_abc456",
+      "object": "vector_store",
+      "created_at": 1699061776,
+      "name": "Support FAQ v2",
+      "bytes": 139920,
+      "file_counts": {
+        "in_progress": 0,
+        "completed": 3,
+        "failed": 0,
+        "cancelled": 0,
+        "total": 3
+      }
+    }
+  ],
+  "first_id": "vs_abc123",
+  "last_id": "vs_abc456",
+  "has_more": false
+}
+```
+
+Retrieve vector storeBeta
+get
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}
+Retrieves a vector store.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store to retrieve.
+
+Returns
+The vector store object matching the specified ID.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store = client.beta.vector_stores.retrieve(
+  vector_store_id="vs_abc123"
+)
+print(vector_store)
+Response
+{
+  "id": "vs_abc123",
+  "object": "vector_store",
+  "created_at": 1699061776
+}
+```
+
+Modify vector storeBeta
+post
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}
+Modifies a vector store.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store to modify.
+
+Request body
+name
+string or null
+
+Optional
+The name of the vector store.
+
+expires_after
+object
+
+Optional
+The expiration policy for a vector store.
+
+
+Show properties
+metadata
+map
+
+Optional
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+Returns
+The modified vector store object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store = client.beta.vector_stores.update(
+  vector_store_id="vs_abc123",
+  name="Support FAQ"
+)
+print(vector_store)
+```
+
+```python
+# Response
+{
+  "id": "vs_abc123",
+  "object": "vector_store",
+  "created_at": 1699061776,
+  "name": "Support FAQ",
+  "bytes": 139920,
+  "file_counts": {
+    "in_progress": 0,
+    "completed": 3,
+    "failed": 0,
+    "cancelled": 0,
+    "total": 3
+  }
+}
+```
+
+Delete vector storeBeta
+delete
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}
+Delete a vector store.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store to delete.
+
+Returns
+Deletion status
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+deleted_vector_store = client.beta.vector_stores.delete(
+  vector_store_id="vs_abc123"
+)
+print(deleted_vector_store)
+```
+
+```python
+# Response
+{
+  id: "vs_abc123",
+  object: "vector_store.deleted",
+  deleted: true
+}
+```
+
+The vector store objectBeta
+A vector store is a collection of processed files can be used by the file_search tool.
+
+id
+string
+
+The identifier, which can be referenced in API endpoints.
+
+object
+string
+
+The object type, which is always vector_store.
+
+created_at
+integer
+
+The Unix timestamp (in seconds) for when the vector store was created.
+
+name
+string
+
+The name of the vector store.
+
+usage_bytes
+integer
+
+The total number of bytes used by the files in the vector store.
+
+file_counts
+object
+
+
+Show properties
+status
+string
+
+The status of the vector store, which can be either expired, in_progress, or completed. A status of completed indicates that the vector store is ready for use.
+
+expires_after
+object
+
+The expiration policy for a vector store.
+
+
+Show properties
+expires_at
+integer or null
+
+The Unix timestamp (in seconds) for when the vector store will expire.
+
+last_active_at
+integer or null
+
+The Unix timestamp (in seconds) for when the vector store was last active.
+
+metadata
+map
+
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+```python
+# The vector store object
+{
+  "id": "vs_123",
+  "object": "vector_store",
+  "created_at": 1698107661,
+  "usage_bytes": 123456,
+  "last_active_at": 1698107661,
+  "name": "my_vector_store",
+  "status": "completed",
+  "file_counts": {
+    "in_progress": 0,
+    "completed": 100,
+    "cancelled": 0,
+    "failed": 0,
+    "total": 100
+  },
+  "metadata": {},
+  "last_used_at": 1698107661
+}
+```

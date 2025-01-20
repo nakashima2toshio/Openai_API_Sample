@@ -1,0 +1,266 @@
+Files
+Files are used to upload documents that can be used with features like Assistants, Fine-tuning, and Batch API.
+
+Upload file
+post
+
+https://api.openai.com/v1/files
+Upload a file that can be used across various endpoints. Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB.
+
+The Assistants API supports files up to 2 million tokens and of specific file types. See the Assistants Tools guide for details.
+
+The Fine-tuning API only supports .jsonl files. The input also has certain required formats for fine-tuning chat or completions models.
+
+The Batch API only supports .jsonl files up to 100 MB in size. The input also has a specific required format.
+
+Please contact us if you need to increase these storage limits.
+
+Request body
+file
+file
+
+Required
+The File object (not file name) to be uploaded.
+
+purpose
+string
+
+Required
+The intended purpose of the uploaded file.
+
+Use "assistants" for Assistants and Message files, "vision" for Assistants image file inputs, "batch" for Batch API, and "fine-tune" for Fine-tuning.
+
+Returns
+The uploaded File object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+client.files.create(
+  file=open("mydata.jsonl", "rb"),
+  purpose="fine-tune"
+)
+```
+
+```python
+# Response
+{
+  "id": "file-abc123",
+  "object": "file",
+  "bytes": 120000,
+  "created_at": 1677610602,
+  "filename": "mydata.jsonl",
+  "purpose": "fine-tune",
+}
+```
+
+List files
+get
+
+https://api.openai.com/v1/files
+Returns a list of files that belong to the user's organization.
+
+Query parameters
+purpose
+string
+
+Optional
+Only return files with the given purpose.
+
+Returns
+A list of File objects.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+client.files.list()
+```
+
+```python
+# Response
+{
+  "data": [
+    {
+      "id": "file-abc123",
+      "object": "file",
+      "bytes": 175,
+      "created_at": 1613677385,
+      "filename": "salesOverview.pdf",
+      "purpose": "assistants",
+    },
+    {
+      "id": "file-abc123",
+      "object": "file",
+      "bytes": 140,
+      "created_at": 1613779121,
+      "filename": "puppy.jsonl",
+      "purpose": "fine-tune",
+    }
+  ],
+  "object": "list"
+}
+```
+
+Retrieve file
+get
+
+https://api.openai.com/v1/files/{file_id}
+Returns information about a specific file.
+
+Path parameters
+file_id
+string
+
+Required
+The ID of the file to use for this request.
+
+Returns
+The File object matching the specified ID.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+client.files.retrieve("file-abc123")
+```
+
+```python
+# Response
+{
+  "id": "file-abc123",
+  "object": "file",
+  "bytes": 120000,
+  "created_at": 1677610602,
+  "filename": "mydata.jsonl",
+  "purpose": "fine-tune",
+}
+```
+
+Delete file
+delete
+
+https://api.openai.com/v1/files/{file_id}
+Delete a file.
+
+Path parameters
+file_id
+string
+
+Required
+The ID of the file to use for this request.
+
+Returns
+Deletion status.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+client.files.delete("file-abc123")
+```
+
+```python
+# Response
+{
+  "id": "file-abc123",
+  "object": "file",
+  "deleted": true
+}
+```
+
+Retrieve file content
+get
+
+https://api.openai.com/v1/files/{file_id}/content
+Returns the contents of the specified file.
+
+Path parameters
+file_id
+string
+
+Required
+The ID of the file to use for this request.
+
+Returns
+The file content.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+content = client.files.content("file-abc123"
+```
+
+The file object
+The File object represents a document that has been uploaded to OpenAI.
+
+id
+string
+
+The file identifier, which can be referenced in the API endpoints.
+
+bytes
+integer
+
+The size of the file, in bytes.
+
+created_at
+integer
+
+The Unix timestamp (in seconds) for when the file was created.
+
+filename
+string
+
+The name of the file.
+
+object
+string
+
+The object type, which is always file.
+
+purpose
+string
+
+The intended purpose of the file. Supported values are assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision.
+
+status
+Deprecated
+string
+
+Deprecated. The current status of the file, which can be either uploaded, processed, or error.
+
+status_details
+Deprecated
+string
+
+Deprecated. For details on why a fine-tuning training file failed validation, see the error field on fine_tuning.job.
+
+```python
+# The file object
+{
+  "id": "file-abc123",
+  "object": "file",
+  "bytes": 120000,
+  "created_at": 1677610602,
+  "filename": "salesOverview.pdf",
+  "purpose": "assistants",
+}
+```

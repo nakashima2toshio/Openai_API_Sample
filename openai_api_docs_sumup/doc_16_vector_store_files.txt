@@ -1,0 +1,307 @@
+Vector Store FilesBeta
+Vector store files represent files inside a vector store.
+
+Related guide: File Search
+
+Create vector store fileBeta
+post
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/files
+Create a vector store file by attaching a File to a vector store.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store for which to create a File.
+
+Request body
+file_id
+string
+
+Required
+A File ID that the vector store should use. Useful for tools like file_search that can access files.
+
+chunking_strategy
+object
+
+Optional
+The chunking strategy used to chunk the file(s). If not set, will use the auto strategy.
+
+
+Show possible types
+Returns
+A vector store file object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store_file = client.beta.vector_stores.files.create(
+  vector_store_id="vs_abc123",
+  file_id="file-abc123"
+)
+print(vector_store_file)
+```
+
+```python
+# Response
+{
+  "id": "file-abc123",
+  "object": "vector_store.file",
+  "created_at": 1699061776,
+  "usage_bytes": 1234,
+  "vector_store_id": "vs_abcd",
+  "status": "completed",
+  "last_error": null
+}
+```
+
+List vector store filesBeta
+get
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/files
+Returns a list of vector store files.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store that the files belong to.
+
+Query parameters
+limit
+integer
+
+Optional
+Defaults to 20
+A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+
+order
+string
+
+Optional
+Defaults to desc
+Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+
+after
+string
+
+Optional
+A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+
+before
+string
+
+Optional
+A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+
+filter
+string
+
+Optional
+Filter by file status. One of in_progress, completed, failed, cancelled.
+
+Returns
+A list of vector store file objects.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store_files = client.beta.vector_stores.files.list(
+  vector_store_id="vs_abc123"
+)
+print(vector_store_files)
+```
+
+```python
+# Response
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "file-abc123",
+      "object": "vector_store.file",
+      "created_at": 1699061776,
+      "vector_store_id": "vs_abc123"
+    },
+    {
+      "id": "file-abc456",
+      "object": "vector_store.file",
+      "created_at": 1699061776,
+      "vector_store_id": "vs_abc123"
+    }
+  ],
+  "first_id": "file-abc123",
+  "last_id": "file-abc456",
+  "has_more": false
+}
+```
+
+Retrieve vector store fileBeta
+get
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id}
+Retrieves a vector store file.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store that the file belongs to.
+
+file_id
+string
+
+Required
+The ID of the file being retrieved.
+
+Returns
+The vector store file object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store_file = client.beta.vector_stores.files.retrieve(
+  vector_store_id="vs_abc123",
+  file_id="file-abc123"
+)
+print(vector_store_file)
+```
+
+```python
+# Response
+{
+  "id": "file-abc123",
+  "object": "vector_store.file",
+  "created_at": 1699061776,
+  "vector_store_id": "vs_abcd",
+  "status": "completed",
+  "last_error": null
+}
+```
+
+Delete vector store fileBeta
+delete
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id}
+Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the delete file endpoint.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store that the file belongs to.
+
+file_id
+string
+
+Required
+The ID of the file to delete.
+
+Returns
+Deletion status
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+deleted_vector_store_file = client.beta.vector_stores.files.delete(
+    vector_store_id="vs_abc123",
+    file_id="file-abc123"
+)
+print(deleted_vector_store_file)
+```
+
+```python
+# Response
+{
+  id: "file-abc123",
+  object: "vector_store.file.deleted",
+  deleted: true
+}
+```
+
+The vector store file objectBeta
+A list of files attached to a vector store.
+
+id
+string
+
+The identifier, which can be referenced in API endpoints.
+
+object
+string
+
+The object type, which is always vector_store.file.
+
+usage_bytes
+integer
+
+The total vector store usage in bytes. Note that this may be different from the original file size.
+
+created_at
+integer
+
+The Unix timestamp (in seconds) for when the vector store file was created.
+
+vector_store_id
+string
+
+The ID of the vector store that the File is attached to.
+
+status
+string
+
+The status of the vector store file, which can be either in_progress, completed, cancelled, or failed. The status completed indicates that the vector store file is ready for use.
+
+last_error
+object or null
+
+The last error associated with this vector store file. Will be null if there are no errors.
+
+
+Show properties
+chunking_strategy
+object
+
+The strategy used to chunk the file.
+
+```python
+# Show possible types
+# The vector store file object
+{
+  "id": "file-abc123",
+  "object": "vector_store.file",
+  "usage_bytes": 1234,
+  "created_at": 1698107661,
+  "vector_store_id": "vs_abc123",
+  "status": "completed",
+  "last_error": null,
+  "chunking_strategy": {
+    "type": "static",
+    "static": {
+      "max_chunk_size_tokens": 800,
+      "chunk_overlap_tokens": 400
+    }
+  }
+}
+```

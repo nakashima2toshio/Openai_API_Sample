@@ -1,0 +1,317 @@
+Vector Store File BatchesBeta
+Vector store file batches represent operations to add multiple files to a vector store.
+
+Related guide: File Search
+
+Create vector store file batchBeta
+post
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches
+Create a vector store file batch.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store for which to create a File Batch.
+
+Request body
+file_ids
+array
+
+Required
+A list of File IDs that the vector store should use. Useful for tools like file_search that can access files.
+
+chunking_strategy
+object
+
+Optional
+The chunking strategy used to chunk the file(s). If not set, will use the auto strategy.
+
+
+Show possible types
+Returns
+A vector store file batch object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store_file_batch = client.beta.vector_stores.file_batches.create(
+  vector_store_id="vs_abc123",
+  file_ids=["file-abc123", "file-abc456"]
+)
+print(vector_store_file_batch)
+```
+
+```python
+# Response
+{
+  "id": "vsfb_abc123",
+  "object": "vector_store.file_batch",
+  "created_at": 1699061776,
+  "vector_store_id": "vs_abc123",
+  "status": "in_progress",
+  "file_counts": {
+    "in_progress": 1,
+    "completed": 1,
+    "failed": 0,
+    "cancelled": 0,
+    "total": 0,
+  }
+}
+```
+
+Retrieve vector store file batchBeta
+get
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}
+Retrieves a vector store file batch.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store that the file batch belongs to.
+
+batch_id
+string
+
+Required
+The ID of the file batch being retrieved.
+
+Returns
+The vector store file batch object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store_file_batch = client.beta.vector_stores.file_batches.retrieve(
+  vector_store_id="vs_abc123",
+  batch_id="vsfb_abc123"
+)
+print(vector_store_file_batch)
+```
+
+```python
+# Response
+{
+  "id": "vsfb_abc123",
+  "object": "vector_store.file_batch",
+  "created_at": 1699061776,
+  "vector_store_id": "vs_abc123",
+  "status": "in_progress",
+  "file_counts": {
+    "in_progress": 1,
+    "completed": 1,
+    "failed": 0,
+    "cancelled": 0,
+    "total": 0,
+  }
+}
+```
+
+Cancel vector store file batchBeta
+post
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel
+Cancel a vector store file batch. This attempts to cancel the processing of files in this batch as soon as possible.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store that the file batch belongs to.
+
+batch_id
+string
+
+Required
+The ID of the file batch to cancel.
+
+Returns
+The modified vector store file batch object.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+deleted_vector_store_file_batch = client.beta.vector_stores.file_batches.cancel(
+    vector_store_id="vs_abc123",
+    file_batch_id="vsfb_abc123"
+)
+print(deleted_vector_store_file_batch)
+```
+
+```python
+# Response
+{
+  "id": "vsfb_abc123",
+  "object": "vector_store.file_batch",
+  "created_at": 1699061776,
+  "vector_store_id": "vs_abc123",
+  "status": "cancelling",
+  "file_counts": {
+    "in_progress": 12,
+    "completed": 3,
+    "failed": 0,
+    "cancelled": 0,
+    "total": 15,
+  }
+}
+```
+
+List vector store files in a batchBeta
+get
+
+https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files
+Returns a list of vector store files in a batch.
+
+Path parameters
+vector_store_id
+string
+
+Required
+The ID of the vector store that the files belong to.
+
+batch_id
+string
+
+Required
+The ID of the file batch that the files belong to.
+
+Query parameters
+limit
+integer
+
+Optional
+Defaults to 20
+A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+
+order
+string
+
+Optional
+Defaults to desc
+Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+
+after
+string
+
+Optional
+A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+
+before
+string
+
+Optional
+A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+
+filter
+string
+
+Optional
+Filter by file status. One of in_progress, completed, failed, cancelled.
+
+Returns
+A list of vector store file objects.
+
+Example request
+python
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store_files = client.beta.vector_stores.file_batches.list_files(
+  vector_store_id="vs_abc123",
+  batch_id="vsfb_abc123"
+)
+print(vector_store_files)
+```
+
+```python
+# Response
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "file-abc123",
+      "object": "vector_store.file",
+      "created_at": 1699061776,
+      "vector_store_id": "vs_abc123"
+    },
+    {
+      "id": "file-abc456",
+      "object": "vector_store.file",
+      "created_at": 1699061776,
+      "vector_store_id": "vs_abc123"
+    }
+  ],
+  "first_id": "file-abc123",
+  "last_id": "file-abc456",
+  "has_more": false
+}
+```
+
+The vector store files batch objectBeta
+A batch of files attached to a vector store.
+
+id
+string
+
+The identifier, which can be referenced in API endpoints.
+
+object
+string
+
+The object type, which is always vector_store.file_batch.
+
+created_at
+integer
+
+The Unix timestamp (in seconds) for when the vector store files batch was created.
+
+vector_store_id
+string
+
+The ID of the vector store that the File is attached to.
+
+status
+string
+
+The status of the vector store files batch, which can be either in_progress, completed, cancelled or failed.
+
+file_counts
+object
+
+```python
+# Show properties
+#The vector store files batch object
+{
+  "id": "vsfb_123",
+  "object": "vector_store.files_batch",
+  "created_at": 1698107661,
+  "vector_store_id": "vs_abc123",
+  "status": "completed",
+  "file_counts": {
+    "in_progress": 0,
+    "completed": 100,
+    "failed": 0,
+    "cancelled": 0,
+    "total": 100
+  }
+}

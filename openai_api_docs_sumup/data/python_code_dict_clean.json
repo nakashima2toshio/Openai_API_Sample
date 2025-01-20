@@ -1,0 +1,476 @@
+{
+    "1": {
+        "no": 1,
+        "title": "text_generation",
+        "subtitle": "text_generation\nGenerate a response from a language model based on user input queries.",
+        "code": "```python\nfrom openai import OpenAI\nimport pprint\nclient = OpenAI()\n\nresponse = client.chat.completions.create(\n  model=\"gpt-4o-mini\",\n  messages=[\n    {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},\n    {\"role\": \"user\", \"content\": \"What is a LLM?\"}\n  ]\n)\npprint.pprint(response.choices[0].message.content)\n```"
+    },
+    "2": {
+        "no": 2,
+        "title": "vision",
+        "subtitle": "Vision\n## Analyzes an image and provides a textual description using GPT-4o-mini. \n\n```python\nfrom openai import OpenAI\n\nclient = OpenAI()\n\nresponse = client.chat.completions.create(\n  model=\"g",
+        "code": "```python\nfrom openai import OpenAI\n\nclient = OpenAI()\n\nresponse = client.chat.completions.create(\n  model=\"gpt-4o-mini\",\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\"type\": \"text\", \"text\": \"What’s in this image?\"},\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg\",\n          },\n        },\n      ],\n    }\n  ],\n  max_tokens=300,\n)\n\nprint(response.choices[0])\n```"
+    },
+    "3": {
+        "no": 3,
+        "title": "vision",
+        "subtitle": "Vision\nSend an image to the OpenAI API and receive a description of its content.",
+        "code": "```python\nimport base64\nimport requests\n\n# OpenAI API Key\napi_key = \"YOUR_OPENAI_API_KEY\"\n\n# Function to encode the image\ndef encode_image(image_path):\n  with open(image_path, \"rb\") as image_file:\n    return base64.b64encode(image_file.read()).decode('utf-8')\n\n# Path to your image\nimage_path = \"path_to_your_image.jpg\"\n\n# Getting the base64 string\nbase64_image = encode_image(image_path)\n\nheaders = {\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": f\"Bearer {api_key}\"\n}\n\npayload = {\n  \"model\": \"gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"What’s in this image?\"\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": f\"data:image/jpeg;base64,{base64_image}\"\n          }\n        }\n      ]\n    }\n  ],\n  \"max_tokens\": 300\n}\n\nresponse = requests.post(\"https://api.openai.com/v1/chat/completions\", headers=headers, json=payload)\n\nprint(response.json())\n```"
+    },
+    "4": {
+        "no": 4,
+        "title": "vision",
+        "subtitle": "Vision\n### Analyze and compare the content of two provided images using GPT-4o-mini. \n\n```python\nfrom openai import OpenAI\n\nclient = OpenAI()\nresponse = client.chat.completions.create(\n  model=\"gpt",
+        "code": "```python\nfrom openai import OpenAI\n\nclient = OpenAI()\nresponse = client.chat.completions.create(\n  model=\"gpt-4o-mini\",\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"What are in these images? Is there any difference between them?\",\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg\",\n          },\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg\",\n          },\n        },\n      ],\n    }\n  ],\n  max_tokens=300,\n)\nprint(response.choices[0])\n```"
+    },
+    "5": {
+        "no": 5,
+        "title": "vision",
+        "subtitle": "Vision\n### Analyzes an image and provides a textual description of its content.",
+        "code": "```python\nfrom openai import OpenAI\n\nclient = OpenAI()\n\nresponse = client.chat.completions.create(\n  model=\"gpt-4o-mini\",\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\"type\": \"text\", \"text\": \"What’s in this image?\"},\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg\",\n            \"detail\": \"high\"\n          },\n        },\n      ],\n    }\n  ],\n  max_tokens=300,\n)\n\nprint(response.choices[0].message.content)\n```"
+    },
+    "6": {
+        "no": 6,
+        "title": "function_calling",
+        "subtitle": "Function Calling\nRetrieve current weather information for specified locations using a function. \n\n```python\nfrom openai import OpenAI\nimport json\n\nclient = OpenAI()\n\n# Example dummy function hard coded to return the same weather\n# In production,",
+        "code": "```python\nfrom openai import OpenAI\nimport json\n\nclient = OpenAI()\n\n# Example dummy function hard coded to return the same weather\n# In production, this could be your backend API or an external API\ndef get_current_weather(location, unit=\"fahrenheit\"):\n    \"\"\"Get the current weather in a given location\"\"\"\n    if \"tokyo\" in location.lower():\n        return json.dumps({\"location\": \"Tokyo\", \"temperature\": \"10\", \"unit\": unit})\n    elif \"san francisco\" in location.lower():\n        return json.dumps({\"location\": \"San Francisco\", \"temperature\": \"72\", \"unit\": unit})\n    elif \"paris\" in location.lower():\n        return json.dumps({\"location\": \"Paris\", \"temperature\": \"22\", \"unit\": unit})\n    else:\n        return json.dumps({\"location\": location, \"temperature\": \"unknown\"})\n\ndef run_conversation():\n    # Step 1: send the conversation and available functions to the model\n    messages = [{\"role\": \"user\", \"content\": \"What's the weather like in San Francisco, Tokyo, and Paris?\"}]\n    tools = [\n        {\n            \"type\": \"function\",\n            \"function\": {\n                \"name\": \"get_current_weather\",\n                \"description\": \"Get the current weather in a given location\",\n                \"parameters\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"location\": {\n                            \"type\": \"string\",\n                            \"description\": \"The city and state, e.g. San Francisco, CA\",\n                        },\n                        \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]},\n                    },\n                    \"required\": [\"location\"],\n                },\n            },\n        }\n    ]\n    response = client.chat.completions.create(\n        model=\"gpt-4o\",\n        messages=messages,\n        tools=tools,\n        tool_choice=\"auto\",  # auto is default, but we'll be explicit\n    )\n    response_message = response.choices[0].message\n    tool_calls = response_message.tool_calls\n    # Step 2: check if the model wanted to call a function\n    if tool_calls:\n        # Step 3: call the function\n        # Note: the JSON response may not always be valid; be sure to handle errors\n        available_functions = {\n            \"get_current_weather\": get_current_weather,\n        }  # only one function in this example, but you can have multiple\n        messages.append(response_message)  # extend conversation with assistant's reply\n        # Step 4: send the info for each function call and function response to the model\n        for tool_call in tool_calls:\n            function_name = tool_call.function.name\n            function_to_call = available_functions[function_name]\n            function_args = json.loads(tool_call.function.arguments)\n            function_response = function_to_call(\n                location=function_args.get(\"location\"),\n                unit=function_args.get(\"unit\"),\n            )\n            messages.append(\n                {\n                    \"tool_call_id\": tool_call.id,\n                    \"role\": \"tool\",\n                    \"name\": function_name,\n                    \"content\": function_response,\n                }\n            )  # extend conversation with function response\n        second_response = client.chat.completions.create(\n            model=\"gpt-4o\",\n            messages=messages,\n        )  # get a new response from the model where it can see the function response\n        return second_response\nprint(run_conversation())\n```"
+    },
+    "7": {
+        "no": 7,
+        "title": "json_mode",
+        "subtitle": "json_mode\n## A function to generate a JSON response from a chat-based AI model.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nresponse = client.chat.completions.create(\n  model=\"gpt-4o-mini\",\n  response_format={ \"type\": \"json_object\" },\n  messages=[\n    {\"role\": \"system\", \"content\": \"You are a helpful assistant designed to output JSON.\"},\n    {\"role\": \"user\", \"content\": \"Who won the world series in 2020?\"}\n  ]\n)\nprint(response.choices[0].message.content)\n```"
+    },
+    "8": {
+        "no": 8,
+        "title": "json_mode",
+        "subtitle": "json_mode\n### A function to handle JSON data, specifically extracting the winner's name.",
+        "code": "```python\n\"content\": \"{\\\"winner\\\": \\\"Los Angeles Dodgers\\\"}\"`\n```"
+    },
+    "9": {
+        "no": 9,
+        "title": "chat_completions",
+        "subtitle": "chat_completions\n### Generates chat-based responses using the OpenAI API for conversational AI.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nresponse = client.chat.completions.create(\n  model=\"gpt-4o-mini\",\n  messages=[\n    {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},\n    {\"role\": \"user\", \"content\": \"Who won the world series in 2020?\"},\n    {\"role\": \"assistant\", \"content\": \"The Los Angeles Dodgers won the World Series in 2020.\"},\n    {\"role\": \"user\", \"content\": \"Where was it played?\"}\n  ]\n)\n```"
+    },
+    "10": {
+        "no": 10,
+        "title": "chat_completions",
+        "subtitle": "chat_completions\nRetrieve chat completion responses with detailed usage statistics.",
+        "code": "```python\n{\n  \"choices\": [\n    {\n      \"finish_reason\": \"stop\",\n      \"index\": 0,\n      \"message\": {\n        \"content\": \"The 2020 World Series was played in Texas at Globe Life Field in Arlington.\",\n        \"role\": \"assistant\"\n      },\n      \"logprobs\": null\n    }\n  ],\n  \"created\": 1677664795,\n  \"id\": \"chatcmpl-7QyqpwdfhqwajicIEznoc6Q47XAyW\",\n  \"model\": \"gpt-4o-mini\",\n  \"object\": \"chat.completion\",\n  \"usage\": {\n    \"completion_tokens\": 17,\n    \"prompt_tokens\": 57,\n    \"total_tokens\": 74\n  }\n}\n```"
+    },
+    "11": {
+        "no": 11,
+        "title": "chat_completions",
+        "subtitle": "chat_completions\n# Extracts the content of the first message from the completion choices.",
+        "code": "```python\nmessage = completion.choices[0].message.content\n```"
+    },
+    "12": {
+        "no": 12,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n### A script to fine-tune a sarcastic chatbot using predefined dialogues.",
+        "code": "```python\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"What's the capital of France?\"}, {\"role\": \"assistant\", \"content\": \"Paris, as if everyone doesn't know that already.\"}]}\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"Who wrote 'Romeo and Juliet'?\"}, {\"role\": \"assistant\", \"content\": \"Oh, just some guy named William Shakespeare. Ever heard of him?\"}]}\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"How far is the Moon from Earth?\"}, {\"role\": \"assistant\", \"content\": \"Around 384,400 kilometers. Give or take a few, like that really matters.\"}]}\n```"
+    },
+    "13": {
+        "no": 13,
+        "title": "fine_tuninng",
+        "subtitle": "Fine Tuning\n## A method for optimizing model performance using tailored training data. \n\n```python\n{\"prompt\": \"<prompt text>\", \"completion\": \"<ideal generated text>\"}\n{\"prompt\": \"<prompt text>\", \"completion\": \"<ideal generated",
+        "code": "```python\n{\"prompt\": \"<prompt text>\", \"completion\": \"<ideal generated text>\"}\n{\"prompt\": \"<prompt text>\", \"completion\": \"<ideal generated text>\"}\n{\"prompt\": \"<prompt text>\", \"completion\": \"<ideal generated text>\"}\n```"
+    },
+    "14": {
+        "no": 14,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\nEnhancing a chatbot's responses with sarcasm while retaining factual accuracy.",
+        "code": "```python\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"What's the capital of France?\"}, {\"role\": \"assistant\", \"content\": \"Paris\", \"weight\": 0}, {\"role\": \"user\", \"content\": \"Can you be more sarcastic?\"}, {\"role\": \"assistant\", \"content\": \"Paris, as if everyone doesn't know that already.\", \"weight\": 1}]}\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"Who wrote 'Romeo and Juliet'?\"}, {\"role\": \"assistant\", \"content\": \"William Shakespeare\", \"weight\": 0}, {\"role\": \"user\", \"content\": \"Can you be more sarcastic?\"}, {\"role\": \"assistant\", \"content\": \"Oh, just some guy named William Shakespeare. Ever heard of him?\", \"weight\": 1}]}\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"How far is the Moon from Earth?\"}, {\"role\": \"assistant\", \"content\": \"384,400 kilometers\", \"weight\": 0}, {\"role\": \"user\", \"content\": \"Can you be more sarcastic?\"}, {\"role\": \"assistant\", \"content\": \"Around 384,400 kilometers. Give or take a few, like that really matters.\", \"weight\": 1}]}\n```"
+    },
+    "15": {
+        "no": 15,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n## Uploads a JSONL file for fine-tuning a machine learning model with OpenAI.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nclient.files.create(\n  file=open(\"mydata.jsonl\", \"rb\"),\n  purpose=\"fine-tune\"\n)\n```"
+    },
+    "16": {
+        "no": 16,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n## Initiates a fine-tuning job for a specified model using a training file.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nclient.fine_tuning.jobs.create(\n  training_file=\"file-abc123\",\n  model=\"gpt-4o-mini\"\n)\n```"
+    },
+    "17": {
+        "no": 17,
+        "title": "fine_tuninng",
+        "subtitle": "Fine Tuning\nManage fine-tuning jobs, events, and models using OpenAI's API.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\n# List 10 fine-tuning jobs\nclient.fine_tuning.jobs.list(limit=10)\n\n# Retrieve the state of a fine-tune\nclient.fine_tuning.jobs.retrieve(\"ftjob-abc123\")\n\n# Cancel a job\nclient.fine_tuning.jobs.cancel(\"ftjob-abc123\")\n\n# List up to 10 events from a fine-tuning job\nclient.fine_tuning.jobs.list_events(fine_tuning_job_id=\"ftjob-abc123\", limit=10)\n\n# Delete a fine-tuned model (must be an owner of the org the model was created in)\nclient.models.delete(\"ft:gpt-3.5-turbo:acemeco:suffix:abc123\")\n```"
+    },
+    "18": {
+        "no": 18,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n## A script to interact with a fine-tuned OpenAI model for chat completions. \n\n```python\nfrom openai import OpenAI\nclient = OpenAI()\n\ncompletion = client.chat.completions.create(\n  model",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\ncompletion = client.chat.completions.create(\n  model=\"ft:gpt-4o-mini:my-org:custom_suffix:id\",\n  messages=[\n    {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},\n    {\"role\": \"user\", \"content\": \"Hello!\"}\n  ]\n)\nprint(completion.choices[0].message)\n```"
+    },
+    "19": {
+        "no": 19,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n### A JSON representation of a fine-tuning job checkpoint with metrics.",
+        "code": "```python\n{\n    \"object\": \"fine_tuning.job.checkpoint\",\n    \"id\": \"ftckpt_zc4Q7MP6XxulcVzj4MZdwsAB\",\n    \"created_at\": 1519129973,\n    \"fine_tuned_model_checkpoint\": \"ft:gpt-3.5-turbo-0125:my-org:custom-suffix:96olL566:ckpt-step-2000\",\n    \"metrics\": {\n        \"full_valid_loss\": 0.134,\n        \"full_valid_mean_token_accuracy\": 0.874\n    },\n    \"fine_tuning_job_id\": \"ftjob-abc123\",\n    \"step_number\": 2000\n}\n```"
+    },
+    "20": {
+        "no": 20,
+        "title": "fine_tuninng",
+        "subtitle": "Fine Tuning\nDetailed logging of training and validation metrics during model fine-tuning.",
+        "code": "```python\n{\n    \"object\": \"fine_tuning.job.event\",\n    \"id\": \"ftevent-abc-123\",\n    \"created_at\": 1693582679,\n    \"level\": \"info\",\n    \"message\": \"Step 300/300: training loss=0.15, validation loss=0.27, full validation loss=0.40\",\n    \"data\": {\n        \"step\": 300,\n        \"train_loss\": 0.14991648495197296,\n        \"valid_loss\": 0.26569826706596045,\n        \"total_steps\": 300,\n        \"full_valid_loss\": 0.4032616495084362,\n        \"train_mean_token_accuracy\": 0.9444444179534912,\n        \"valid_mean_token_accuracy\": 0.9565217391304348,\n        \"full_valid_mean_token_accuracy\": 0.9089635854341737\n    },\n    \"type\": \"metrics\"\n}\n```"
+    },
+    "21": {
+        "no": 21,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n## Fine-tunes a specified model using a provided training file and parameters.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nclient.fine_tuning.jobs.create(\n  training_file=\"file-abc123\",\n  model=\"gpt-4o-mini\",\n  hyperparameters={\n    \"n_epochs\":2\n  }\n)\n```"
+    },
+    "22": {
+        "no": 22,
+        "title": "fine_tuninng",
+        "subtitle": "Fine Tuning\n## Adjusting a chatbot's responses to be factual yet sarcastic.",
+        "code": "```python\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"What's the capital of France?\"}, {\"role\": \"assistant\", \"content\": \"Paris, as if everyone doesn't know that already.\"}]}\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"Who wrote 'Romeo and Juliet'?\"}, {\"role\": \"assistant\", \"content\": \"Oh, just some guy named William Shakespeare. Ever heard of him?\"}]}\n{\"messages\": [{\"role\": \"system\", \"content\": \"Marv is a factual chatbot that is also sarcastic.\"}, {\"role\": \"user\", \"content\": \"How far is the Moon from Earth?\"}, {\"role\": \"assistant\", \"content\": \"Around 384,400 kilometers. Give or take a few, like that really matters.\"}]}\n```"
+    },
+    "23": {
+        "no": 23,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n# Uploads a training file and initiates a fine-tuning job with OpenAI API. \n\n```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nfile = client.files.create(\n  file=open(\"",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nfile = client.files.create(\n  file=open(\"marv.jsonl\", \"rb\"),\n  purpose=\"fine-tune\"\n)\n\nclient.fine_tuning.jobs.create(\n  training_file=file.id,\n  model=\"gpt-4o-mini\"\n)\n```"
+    },
+    "24": {
+        "no": 24,
+        "title": "fine_tuninng",
+        "subtitle": "Fine Tuning\n### Extract structured information from sports headlines in JSON format.",
+        "code": "```python\n{\"messages\": [{\"role\": \"system\", \"content\": \"Given a sports headline, provide the following fields in a JSON dict, where applicable: \\\"player\\\" (full name), \\\"team\\\", \\\"sport\\\", and \\\"gender\\\".\"}, {\"role\": \"user\", \"content\": \"Sources: Colts grant RB Taylor OK to seek trade\"}, {\"role\": \"assistant\", \"content\": \"{\\\"player\\\": \\\"Jonathan Taylor\\\", \\\"team\\\": \\\"Colts\\\", \\\"sport\\\": \\\"football\\\", \\\"gender\\\": \\\"male\\\" }\"}]}\n{\"messages\": [{\"role\": \"system\", \"content\": \"Given a sports headline, provide the following fields in a JSON dict, where applicable: \\\"player\\\" (full name), \\\"team\\\", \\\"sport\\\", and \\\"gender\\\".\"}, {\"role\": \"user\", \"content\": \"OSU 'split down middle' on starting QB battle\"}, {\"role\": \"assistant\", \"content\": \"{\\\"player\\\": null, \\\"team\\\": \\\"OSU\\\", \\\"sport\\\": \\\"football\\\", \\\"gender\\\": null }\"}]}\n```"
+    },
+    "25": {
+        "no": 25,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n## Uploads a dataset and initiates a fine-tuning job for a model.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nfile = client.files.create(\n  file=open(\"sports-context.jsonl\", \"rb\"),\n  purpose=\"fine-tune\"\n)\n\nclient.fine_tuning.jobs.create(\n  training_file=file.id,\n  model=\"gpt-4o-mini\"\n)\n```"
+    },
+    "26": {
+        "no": 26,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n### Generate structured JSON data from a sports headline using a fine-tuned model.",
+        "code": "```python\ncompletion = client.chat.completions.create(\n  model=\"ft:gpt-4o-mini:my-org:custom_suffix:id\",\n  messages=[\n    {\"role\": \"system\", \"content\": \"Given a sports headline, provide the following fields in a JSON dict, where applicable: player (full name), team, sport, and gender\"},\n    {\"role\": \"user\", \"content\": \"Richardson wins 100m at worlds to cap comeback\"}\n  ]\n)\n\nprint(completion.choices[0].message)\n```"
+    },
+    "27": {
+        "no": 27,
+        "title": "fine_tuninng",
+        "subtitle": "Fine Tuning\n### A JSON representation of an athlete's profile in track and field.",
+        "code": "```python\n{\n    \"player\": \"Sha'Carri Richardson\",\n    \"team\": null,\n    \"sport\": \"track and field\",\n    \"gender\": \"female\"\n}\n```"
+    },
+    "28": {
+        "no": 28,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\nRetrieve current weather information for a specified location in chosen format.",
+        "code": "```python\n{\n    \"messages\": [\n        { \"role\": \"user\", \"content\": \"What is the weather in San Francisco?\" },\n        {\n            \"role\": \"assistant\",\n            \"tool_calls\": [\n                {\n                    \"id\": \"call_id\",\n                    \"type\": \"function\",\n                    \"function\": {\n                        \"name\": \"get_current_weather\",\n                        \"arguments\": \"{\\\"location\\\": \\\"San Francisco, USA\\\", \\\"format\\\": \\\"celsius\\\"}\"\n                    }\n                }\n            ]\n        }\n    ],\n    \"tools\": [\n        {\n            \"type\": \"function\",\n            \"function\": {\n                \"name\": \"get_current_weather\",\n                \"description\": \"Get the current weather\",\n                \"parameters\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"location\": {\n                            \"type\": \"string\",\n                            \"description\": \"The city and country, eg. San Francisco, USA\"\n                        },\n                        \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"] }\n                    },\n                    \"required\": [\"location\", \"format\"]\n                }\n            }\n        }\n    ]\n}\n```"
+    },
+    "29": {
+        "no": 29,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n### Implements a conversation flow for querying current weather information.",
+        "code": "```python\n{\n    \"messages\": [\n        {\"role\": \"user\", \"content\": \"What is the weather in San Francisco?\"},\n        {\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"call_id\", \"type\": \"function\", \"function\": {\"name\": \"get_current_weather\", \"arguments\": \"{\\\"location\\\": \\\"San Francisco, USA\\\", \\\"format\\\": \\\"celsius\\\"}\"}}]}\n        {\"role\": \"tool\", \"tool_call_id\": \"call_id\", \"content\": \"21.0\"},\n        {\"role\": \"assistant\", \"content\": \"It is 21 degrees celsius in San Francisco, CA\"}\n    ],\n    \"tools\": [...] // same as before\n}\n```"
+    },
+    "30": {
+        "no": 30,
+        "title": "fine_tuninng",
+        "subtitle": "Fine Tuning\n### This code snippet demonstrates a structured API call for fetching weather data.",
+        "code": "```python\n{\n    \"messages\": [\n        { \"role\": \"user\", \"content\": \"What is the weather in San Francisco?\" },\n        {\n            \"role\": \"assistant\",\n            \"function_call\": {\n                \"name\": \"get_current_weather\",\n                \"arguments\": \"{\\\"location\\\": \\\"San Francisco, USA\\\", \\\"format\\\": \\\"celsius\\\"}\"\n            }\n        }\n    ],\n    \"functions\": [\n        {\n            \"name\": \"get_current_weather\",\n            \"description\": \"Get the current weather\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"location\": {\n                        \"type\": \"string\",\n                        \"description\": \"The city and country, eg. San Francisco, USA\"\n                    },\n                    \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"] }\n                },\n                \"required\": [\"location\", \"format\"]\n            }\n        }\n    ]\n}\n```"
+    },
+    "31": {
+        "no": 31,
+        "title": "fine_tuninng",
+        "subtitle": "fine_tuning\n## A structured dialogue for querying current weather information.",
+        "code": "```python\n{\n    \"messages\": [\n        {\"role\": \"user\", \"content\": \"What is the weather in San Francisco?\"},\n        {\"role\": \"assistant\", \"function_call\": {\"name\": \"get_current_weather\", \"arguments\": \"{\\\"location\\\": \\\"San Francisco, USA\\\", \\\"format\\\": \\\"celsius\\\"}\"}}\n        {\"role\": \"function\", \"name\": \"get_current_weather\", \"content\": \"21.0\"},\n        {\"role\": \"assistant\", \"content\": \"It is 21 degrees celsius in San Francisco, CA\"}\n    ],\n    \"functions\": [...] // same as before\n}\n```"
+    },
+    "32": {
+        "no": 32,
+        "title": "batch_api",
+        "subtitle": "batch_api\n### Sends multiple chat completion requests to the OpenAI API in batch format.",
+        "code": "```python\n{\"custom_id\": \"request-1\", \"method\": \"POST\", \"url\": \"/v1/chat/completions\", \"body\": {\"model\": \"gpt-3.5-turbo-0125\", \"messages\": [{\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},{\"role\": \"user\", \"content\": \"Hello world!\"}],\"max_tokens\": 1000}}\n{\"custom_id\": \"request-2\", \"method\": \"POST\", \"url\": \"/v1/chat/completions\", \"body\": {\"model\": \"gpt-3.5-turbo-0125\", \"messages\": [{\"role\": \"system\", \"content\": \"You are an unhelpful assistant.\"},{\"role\": \"user\", \"content\": \"Hello world!\"}],\"max_tokens\": 1000}}\n```"
+    },
+    "33": {
+        "no": 33,
+        "title": "batch_api",
+        "subtitle": "batch_api\n## Uploads a JSONL file for batch processing using OpenAI's API.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nbatch_input_file = client.files.create(\n  file=open(\"batchinput.jsonl\", \"rb\"),\n  purpose=\"batch\"\n)\n```"
+    },
+    "34": {
+        "no": 34,
+        "title": "batch_api",
+        "subtitle": "batch_api\nCreates a new batch job for chat completions with specified parameters.",
+        "code": "```python\nbatch_input_file_id = batch_input_file.id\n\nclient.batches.create(\n    input_file_id=batch_input_file_id,\n    endpoint=\"/v1/chat/completions\",\n    completion_window=\"24h\",\n    metadata={\n      \"description\": \"nightly eval job\"\n    }\n)\n```"
+    },
+    "35": {
+        "no": 35,
+        "title": "batch_api",
+        "subtitle": "batch_api\n## Retrieve a specific batch of data using the OpenAI API with a given ID.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nclient.batches.retrieve(\"batch_abc123\")\n```"
+    },
+    "36": {
+        "no": 36,
+        "title": "batch_api",
+        "subtitle": "batch_api  \n# Fetches and prints the content of a specified file from OpenAI's API.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nfile_response = client.files.content(\"file-xyz123\")\nprint(file_response.text)\n```"
+    },
+    "37": {
+        "no": 37,
+        "title": "batch_api",
+        "subtitle": "batch_api\n## Processes and returns responses for multiple API requests in batch format.",
+        "code": "```python\n{\"id\": \"batch_req_123\", \"custom_id\": \"request-2\", \"response\": {\"status_code\": 200, \"request_id\": \"req_123\", \"body\": {\"id\": \"chatcmpl-123\", \"object\": \"chat.completion\", \"created\": 1711652795, \"model\": \"gpt-3.5-turbo-0125\", \"choices\": [{\"index\": 0, \"message\": {\"role\": \"assistant\", \"content\": \"Hello.\"}, \"logprobs\": null, \"finish_reason\": \"stop\"}], \"usage\": {\"prompt_tokens\": 22, \"completion_tokens\": 2, \"total_tokens\": 24}, \"system_fingerprint\": \"fp_123\"}}, \"error\": null}\n{\"id\": \"batch_req_456\", \"custom_id\": \"request-1\", \"response\": {\"status_code\": 200, \"request_id\": \"req_789\", \"body\": {\"id\": \"chatcmpl-abc\", \"object\": \"chat.completion\", \"created\": 1711652789, \"model\": \"gpt-3.5-turbo-0125\", \"choices\": [{\"index\": 0, \"message\": {\"role\": \"assistant\", \"content\": \"Hello! How can I assist you today?\"}, \"logprobs\": null, \"finish_reason\": \"stop\"}], \"usage\": {\"prompt_tokens\": 20, \"completion_tokens\": 9, \"total_tokens\": 29}, \"system_fingerprint\": \"fp_3ba\"}}, \"error\": null}\n```"
+    },
+    "38": {
+        "no": 38,
+        "title": "batch_api",
+        "subtitle": "batch_api\n## Cancels a specified batch job using the OpenAI API.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nclient.batches.cancel(\"batch_abc123\")\n```"
+    },
+    "39": {
+        "no": 39,
+        "title": "batch_api",
+        "subtitle": "batch_api\n## Retrieve a list of batches from the OpenAI API with a limit of 10.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nclient.batches.list(limit=10)\n```"
+    },
+    "40": {
+        "no": 40,
+        "title": "image_generation",
+        "subtitle": "Image Generation\nGenerates an image of a white Siamese cat using DALL-E 3 API.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nresponse = client.images.generate(\n  model=\"dall-e-3\",\n  prompt=\"a white siamese cat\",\n  size=\"1024x1024\",\n  quality=\"standard\",\n  n=1,\n)\n\nimage_url = response.data[0].url\n```"
+    },
+    "41": {
+        "no": 41,
+        "title": "image_generation",
+        "subtitle": "Image Generation\nGenerate and edit images using DALL-E 2 based on a descriptive prompt.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nresponse = client.images.edit((\n  model=\"dall-e-2\",\n  image=open(\"sunlit_lounge.png\", \"rb\"),\n  mask=open(\"mask.png\", \"rb\"),\n  prompt=\"A sunlit indoor lounge area with a pool containing a flamingo\",\n  n=1,\n  size=\"1024x1024\"\n)\nimage_url = response.data[0].url\n```"
+    },
+    "42": {
+        "no": 42,
+        "title": "image_generation",
+        "subtitle": "Image Generation\nGenerates variations of an image using OpenAI's DALL-E 2 model.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nresponse = client.images.create_variation(\n  model=\"dall-e-2\",\n  image=open(\"corgi_and_cat_paw.png\", \"rb\"),\n  n=1,\n  size=\"1024x1024\"\n)\n\nimage_url = response.data[0].url\n```"
+    },
+    "43": {
+        "no": 43,
+        "title": "text_to_speech",
+        "subtitle": "text_to_speech\n## Converts text input into speech and saves it as an MP3 file.",
+        "code": "```python\nfrom pathlib import Path\nfrom openai import OpenAI\nclient = OpenAI()\n\nspeech_file_path = Path(__file__).parent / \"speech.mp3\"\nresponse = client.audio.speech.create(\n  model=\"tts-1\",\n  voice=\"alloy\",\n  input=\"Today is a wonderful day to build something people love!\"\n)\n\nresponse.stream_to_file(speech_file_path)\n```"
+    },
+    "44": {
+        "no": 44,
+        "title": "text_to_speech",
+        "subtitle": "text_to_speech\n## Converts text input into speech audio and saves it as an MP3 file.",
+        "code": "```python\nfrom openai import OpenAI\n\nclient = OpenAI()\n\nresponse = client.audio.speech.create(\n    model=\"tts-1\",\n    voice=\"alloy\",\n    input=\"Hello world! This is a streaming test.\",\n)\n\nresponse.stream_to_file(\"output.mp3\")\n```"
+    },
+    "45": {
+        "no": 45,
+        "title": "speech_to_text",
+        "subtitle": "speech_to_text\nTranscribe audio files into text using OpenAI's Whisper model.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\naudio_file = open(\"/path/to/file/speech.mp3\", \"rb\")\ntranscription = client.audio.transcriptions.create(\n  model=\"whisper-1\",\n  file=audio_file,\n  response_format=\"text\",\n  prompt=\"ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.\"\n)\nprint(transcription.text)\n```"
+    },
+    "46": {
+        "no": 46,
+        "title": "speech_to_text",
+        "subtitle": "Speech to Text\nTranscribes audio files and corrects spelling discrepancies in the text.",
+        "code": "```python\nsystem_prompt = \"You are a helpful assistant for the company ZyntriQix.\nYour task is to correct any spelling discrepancies in the transcribed text.\nMake sure that the names of the following products are spelled correctly: ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T. Only add necessary punctuation such as periods, commas, and capitalization, and use only the context provided.\"\n\ndef generate_corrected_transcript(temperature, system_prompt, audio_file):\n    response = client.chat.completions.create(\n        model=\"gpt-4o\",\n        temperature=temperature,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": system_prompt\n            },\n            {\n                \"role\": \"user\",\n                \"content\": transcribe(audio_file, \"\")\n            }\n        ]\n    )\n    return completion.choices[0].message.content\n\ncorrected_text = generate_corrected_transcript(0, system_prompt, fake_company_filepath)\n```"
+    },
+    "47": {
+        "no": 47,
+        "title": "embedding",
+        "subtitle": "Embedding\n# Generate vector embeddings for a given text string using OpenAI API.\n\n```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nresponse = client.embeddings.create(\n    input=\"Your text string goes here\",",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nresponse = client.embeddings.create(\n    input=\"Your text string goes here\",\n    model=\"text-embedding-3-small\"\n)\n\nprint(response.data[0].embedding)\n```"
+    },
+    "48": {
+        "no": 48,
+        "title": "embedding",
+        "subtitle": "Embedding\n### Generate embeddings for text data using OpenAI's API and save to CSV.\n\n```python\nfrom openai import OpenAI\nclient = OpenAI()\n\ndef get_embedding(text, model=\"text-embedding-3-small\"):",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\ndef get_embedding(text, model=\"text-embedding-3-small\"):\n   text = text.replace(\"\\n\", \" \")\n   return client.embeddings.create(input = [text], model=model).data[0].embedding\n\ndf['ada_embedding'] = df.combined.apply(lambda x: get_embedding(x, model='text-embedding-3-small'))\ndf.to_csv('output/embedded_1k_reviews.csv', index=False)\n```"
+    },
+    "49": {
+        "no": 49,
+        "title": "embedding",
+        "subtitle": "Embedding\n## This code reads a CSV file and converts string embeddings into numpy arrays. \n\n```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.read_csv('output/embedded_1k_reviews.csv')\ndf['",
+        "code": "```python\nimport pandas as pd\n\ndf = pd.read_csv('output/embedded_1k_reviews.csv')\ndf['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)\n```"
+    },
+    "50": {
+        "no": 50,
+        "title": "embedding",
+        "subtitle": "Embedding\n### This code generates and normalizes embeddings for a given input sentence. \n\n```python\nfrom openai import OpenAI\nimport numpy as np\n\nclient = OpenAI()\n\ndef normalize_l2(x):\n    x = np.array",
+        "code": "```python\nfrom openai import OpenAI\nimport numpy as np\n\nclient = OpenAI()\n\ndef normalize_l2(x):\n    x = np.array(x)\n    if x.ndim == 1:\n        norm = np.linalg.norm(x)\n        if norm == 0:\n            return x\n        return x / norm\n    else:\n        norm = np.linalg.norm(x, 2, axis=1, keepdims=True)\n        return np.where(norm == 0, x, x / norm)\n\n\nresponse = client.embeddings.create(\n    model=\"text-embedding-3-small\", input=\"Testing 123\", encoding_format=\"float\"\n)\n\ncut_dim = response.data[0].embedding[:256]\nnorm_dim = normalize_l2(cut_dim)\n\nprint(norm_dim)\n```"
+    },
+    "51": {
+        "no": 51,
+        "title": "embedding",
+        "subtitle": "Embedding\nGenerate a response about the 2022 Winter Olympics using a provided article.",
+        "code": "```python\nquery = f\"\"\"Use the below article on the 2022 Winter Olympics to answer the subsequent question. If the answer cannot be found, write \"I don't know.\"\n\nArticle:\n\\\"\\\"\\\"\n{wikipedia_article_on_curling}\n\\\"\\\"\\\"\n\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?\"\"\"\n\nresponse = client.chat.completions.create(\n    messages=[\n        {'role': 'system', 'content': 'You answer questions about the 2022 Winter Olympics.'},\n        {'role': 'user', 'content': query},\n    ],\n    model=GPT_MODEL,\n    temperature=0,\n)\n\nprint(response.choices[0].message.content)\n```"
+    },
+    "52": {
+        "no": 52,
+        "title": "embedding",
+        "subtitle": "Embedding\n## Retrieve the top N product reviews similar to a given description.\n\n```python\nfrom openai.embeddings_utils import get_embedding, cosine_similarity\n\ndef search_reviews(df, product_description, n=3, pprint=True):\n   embedding",
+        "code": "```python\nfrom openai.embeddings_utils import get_embedding, cosine_similarity\n\ndef search_reviews(df, product_description, n=3, pprint=True):\n   embedding = get_embedding(product_description, model='text-embedding-3-small')\n   df['similarities'] = df.ada_embedding.apply(lambda x: cosine_similarity(x, embedding))\n   res = df.sort_values('similarities', ascending=False).head(n)\n   return res\n\nres = search_reviews(df, 'delicious beans', n=3)\n```"
+    },
+    "53": {
+        "no": 53,
+        "title": "embedding",
+        "subtitle": "Embedding\n## This code computes embeddings for code snippets and retrieves similar ones.\n\n```python\nfrom openai.embeddings_utils import get_embedding, cosine_similarity\n\ndf['code_embedding'] = df['code'].apply(lambda x: get_embedding(x",
+        "code": "```python\nfrom openai.embeddings_utils import get_embedding, cosine_similarity\n\ndf['code_embedding'] = df['code'].apply(lambda x: get_embedding(x, model='text-embedding-3-small'))\n\ndef search_functions(df, code_query, n=3, pprint=True, n_lines=7):\n   embedding = get_embedding(code_query, model='text-embedding-3-small')\n   df['similarities'] = df.code_embedding.apply(lambda x: cosine_similarity(x, embedding))\n\n   res = df.sort_values('similarities', ascending=False).head(n)\n   return res\nres = search_functions(df, 'Completions API tests', n=3)\n```"
+    },
+    "54": {
+        "no": 54,
+        "title": "embedding",
+        "subtitle": "Embedding\n## Retrieve indices of nearest neighbor strings based on embeddings similarity.\n\n```python\ndef recommendations_from_strings(\n   strings: List[str],\n   index_of_source_string: int,\n   model=\"text-embedding-3-small\",\n) ->",
+        "code": "```python\ndef recommendations_from_strings(\n   strings: List[str],\n   index_of_source_string: int,\n   model=\"text-embedding-3-small\",\n) -> List[int]:\n   \"\"\"Return nearest neighbors of a given string.\"\"\"\n\n   # get embeddings for all strings\n   embeddings = [embedding_from_string(string, model=model) for string in strings]\n\n   # get the embedding of the source string\n   query_embedding = embeddings[index_of_source_string]\n\n   # get distances between the source embedding and other embeddings (function from embeddings_utils.py)\n   distances = distances_from_embeddings(query_embedding, embeddings, distance_metric=\"cosine\")\n\n   # get indices of nearest neighbors (function from embeddings_utils.py)\n   indices_of_nearest_neighbors = indices_of_nearest_neighbors_from_distances(distances)\n   return indices_of_nearest_neighbors\n```"
+    },
+    "55": {
+        "no": 55,
+        "title": "embedding",
+        "subtitle": "Embedding\nVisualizing Amazon ratings using t-SNE to reduce dimensionality of embeddings.",
+        "code": "```python\nimport pandas as pd\nfrom sklearn.manifold import TSNE\nimport matplotlib.pyplot as plt\nimport matplotlib\n\ndf = pd.read_csv('output/embedded_1k_reviews.csv')\nmatrix = df.ada_embedding.apply(eval).to_list()\n\n# Create a t-SNE model and transform the data\ntsne = TSNE(n_components=2, perplexity=15, random_state=42, init='random', learning_rate=200)\nvis_dims = tsne.fit_transform(matrix)\n\ncolors = [\"red\", \"darkorange\", \"gold\", \"turquiose\", \"darkgreen\"]\nx = [x for x,y in vis_dims]\ny = [y for x,y in vis_dims]\ncolor_indices = df.Score.values - 1\n\ncolormap = matplotlib.colors.ListedColormap(colors)\nplt.scatter(x, y, c=color_indices, cmap=colormap, alpha=0.3)\nplt.title(\"Amazon ratings visualized in language using t-SNE\")\n```"
+    },
+    "56": {
+        "no": 56,
+        "title": "embedding",
+        "subtitle": "Embedding\nSplits the dataset into training and testing sets for model evaluation.",
+        "code": "```python\nfrom sklearn.model_selection import train_test_split\n\nX_train, X_test, y_train, y_test = train_test_split(\n    list(df.ada_embedding.values),\n    df.Score,\n    test_size = 0.2,\n    random_state=42\n)\n```"
+    },
+    "57": {
+        "no": 57,
+        "title": "embedding",
+        "subtitle": "Embedding\n## This code uses a Random Forest Regressor to fit and predict data values. \n\n```python\nfrom sklearn.ensemble import RandomForestRegressor\n\nrfr = RandomForestRegressor(n_estimators=100)\nrfr",
+        "code": "```python\nfrom sklearn.ensemble import RandomForestRegressor\n\nrfr = RandomForestRegressor(n_estimators=100)\nrfr.fit(X_train, y_train)\npreds = rfr.predict(X_test)\n```"
+    },
+    "58": {
+        "no": 58,
+        "title": "embedding",
+        "subtitle": "Embedding\n## This code trains a Random Forest classifier and evaluates its performance. \n\n```python\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report, accuracy_score\n\nclf = RandomForestClassifier(n_estimators=100",
+        "code": "```python\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report, accuracy_score\n\nclf = RandomForestClassifier(n_estimators=100)\nclf.fit(X_train, y_train)\npreds = clf.predict(X_test)\n```"
+    },
+    "59": {
+        "no": 59,
+        "title": "embedding",
+        "subtitle": "Embedding\n## Calculate sentiment scores for reviews using label embeddings.\n\n```python\nfrom openai.embeddings_utils import cosine_similarity, get_embedding\n\ndf= df[df.Score!=3]\ndf['sentiment'] = df.Score.replace({1:'",
+        "code": "```python\nfrom openai.embeddings_utils import cosine_similarity, get_embedding\n\ndf= df[df.Score!=3]\ndf['sentiment'] = df.Score.replace({1:'negative', 2:'negative', 4:'positive', 5:'positive'})\n\nlabels = ['negative', 'positive']\nlabel_embeddings = [get_embedding(label, model=model) for label in labels]\n\ndef label_score(review_embedding, label_embeddings):\n   return cosine_similarity(review_embedding, label_embeddings[1]) - cosine_similarity(review_embedding, label_embeddings[0])\n\nprediction = 'positive' if label_score('Sample Review', label_embeddings) > 0 else 'negative'\n```"
+    },
+    "60": {
+        "no": 60,
+        "title": "embedding",
+        "subtitle": "Embedding\n## Calculate mean embeddings for users and products from the dataset. \n\n```python\nuser_embeddings = df.groupby('UserId').ada_embedding.apply(np.mean)\nprod_embeddings = df.groupby('ProductId').ada_embedding.apply(np.mean)",
+        "code": "```python\nuser_embeddings = df.groupby('UserId').ada_embedding.apply(np.mean)\nprod_embeddings = df.groupby('ProductId').ada_embedding.apply(np.mean)\n```"
+    },
+    "61": {
+        "no": 61,
+        "title": "embedding",
+        "subtitle": "Embedding\n### This code performs KMeans clustering on sentence embeddings from a DataFrame.\n\n```python\nimport numpy as np\nfrom sklearn.cluster import KMeans\n\nmatrix = np.vstack(df.ada_embedding.values)\nn_clusters = 4",
+        "code": "```python\nimport numpy as np\nfrom sklearn.cluster import KMeans\n\nmatrix = np.vstack(df.ada_embedding.values)\nn_clusters = 4\n\nkmeans = KMeans(n_clusters = n_clusters, init='k-means++', random_state=42)\nkmeans.fit(matrix)\ndf['Cluster'] = kmeans.labels_\n```"
+    },
+    "62": {
+        "no": 62,
+        "title": "embedding",
+        "subtitle": "Embedding\n## Counts the number of tokens in a given string using a specified encoding. \n\n```python\nimport tiktoken\n\ndef num_tokens_from_string(string: str, encoding_name: str) -> int:\n    \"\"\"Returns the number",
+        "code": "```python\nimport tiktoken\n\ndef num_tokens_from_string(string: str, encoding_name: str) -> int:\n    \"\"\"Returns the number of tokens in a text string.\"\"\"\n    encoding = tiktoken.get_encoding(encoding_name)\n    num_tokens = len(encoding.encode(string))\n    return num_tokens\n\nnum_tokens_from_string(\"tiktoken is great!\", \"cl100k_base\")\n```"
+    },
+    "63": {
+        "no": 63,
+        "title": "assistants_quick_start",
+        "subtitle": "assistants_quick_start\nCreate a personal math tutor assistant using OpenAI's API with code execution.",
+        "code": "```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nassistant = client.beta.assistants.create(\n  name=\"Math Tutor\",\n  instructions=\"You are a personal math tutor. Write and run code to answer math questions.\",\n  tools=[{\"type\": \"code_interpreter\"}],\n  model=\"gpt-4o\",\n)\n```"
+    },
+    "64": {
+        "no": 64,
+        "title": "assistants_quick_start",
+        "subtitle": "assistants_quick_start\n## Create a new thread using the client in the beta API.",
+        "code": "```python\nthread = client.beta.threads.create()\n```"
+    },
+    "65": {
+        "no": 65,
+        "title": "assistants_quick_start",
+        "subtitle": "assistants_quick_start\n## Sends a user message to a chat thread for assistance with an equation.",
+        "code": "```python\nmessage = client.beta.threads.messages.create(\n  thread_id=thread.id,\n  role=\"user\",\n  content=\"I need to solve the equation `3x + 11 = 14`. Can you help me?\"\n)\n```"
+    },
+    "66": {
+        "no": 66,
+        "title": "assistants_quick_start",
+        "subtitle": "assistants_quick_start\nStream and handle events from the OpenAI Assistant's response in real time.",
+        "code": "```python\nfrom typing_extensions import override\nfrom openai import AssistantEventHandler\n\n# First, we create a EventHandler class to define\n# how we want to handle the events in the response stream.\n\nclass EventHandler(AssistantEventHandler):\n  @override\n  def on_text_created(self, text) -> None:\n    print(f\"\\nassistant > \", end=\"\", flush=True)\n\n  @override\n  def on_text_delta(self, delta, snapshot):\n    print(delta.value, end=\"\", flush=True)\n\n  def on_tool_call_created(self, tool_call):\n    print(f\"\\nassistant > {tool_call.type}\\n\", flush=True)\n\n  def on_tool_call_delta(self, delta, snapshot):\n    if delta.type == 'code_interpreter':\n      if delta.code_interpreter.input:\n        print(delta.code_interpreter.input, end=\"\", flush=True)\n      if delta.code_interpreter.outputs:\n        print(f\"\\n\\noutput >\", flush=True)\n        for output in delta.code_interpreter.outputs:\n          if output.type == \"logs\":\n            print(f\"\\n{output.logs}\", flush=True)\n\n# Then, we use the `stream` SDK helper\n# with the `EventHandler` class to create the Run\n# and stream the response.\n\nwith client.beta.threads.runs.stream(\n  thread_id=thread.id,\n  assistant_id=assistant.id,\n  instructions=\"Please address the user as Jane Doe. The user has a premium account.\",\n  event_handler=EventHandler(),\n) as stream:\n  stream.until_done()\n```"
+    },
+    "67": {
+        "no": 67,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\n## Uploads a CSV file for processing by the assistants API.",
+        "code": "```python\nfile = client.files.create(\n  file=open(\"revenue-forecast.csv\", \"rb\"),\n  purpose='assistants'\n)```"
+    },
+    "68": {
+        "no": 68,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\n## Create an AI assistant for generating insightful data visualizations from CSV files.",
+        "code": "```python\nassistant = client.beta.assistants.create(\n  name=\"Data visualizer\",\n  description=\"You are great at creating beautiful data visualizations. You analyze data present in .csv files, understand trends, and come up with data visualizations relevant to those trends. You also share a brief text summary of the trends observed.\",\n  model=\"gpt-4o\",\n  tools=[{\"type\": \"code_interpreter\"}],\n  tool_resources={\n    \"code_interpreter\": {\n      \"file_ids\": [file.id]\n    }\n  }\n)\n```"
+    },
+    "69": {
+        "no": 69,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\n### Create data visualizations using a file with code interpreter tools.",
+        "code": "```python\nthread = client.beta.threads.create(\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": \"Create 3 data visualizations based on the trends in this file.\",\n      \"attachments\": [\n        {\n          \"file_id\": file.id,\n          \"tools\": [{\"type\": \"code_interpreter\"}]\n        }\n      ]\n    }\n  ]\n)\n```"
+    },
+    "70": {
+        "no": 70,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\n## Uploads an image and initiates a thread for image comparison queries.",
+        "code": "```python\nfile = client.files.create(\n  file=open(\"myimage.png\", \"rb\"),\n  purpose=\"vision\"\n)\nthread = client.beta.threads.create(\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"What is the difference between these images?\"\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\"url\": \"https://example.com/image.png\"}\n        },\n        {\n          \"type\": \"image_file\",\n          \"image_file\": {\"file_id\": file.id}\n        },\n      ],\n    }\n  ]\n)\n```"
+    },
+    "71": {
+        "no": 71,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\n## Creates a thread with a user message and an image for analysis.",
+        "code": "```python\nthread = client.beta.threads.create(\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"What is this an image of?\"\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"https://example.com/image.png\",\n            \"detail\": \"high\"\n          }\n        },\n      ],\n    }\n  ]\n)\n```"
+    },
+    "72": {
+        "no": 72,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\nRetrieve and format message content with annotations as footnotes and citations.",
+        "code": "```python\n# Retrieve the message object\nmessage = client.beta.threads.messages.retrieve(\n  thread_id=\"...\",\n  message_id=\"...\"\n)\n\n# Extract the message content\nmessage_content = message.content[0].text\nannotations = message_content.annotations\ncitations = []\n# Iterate over the annotations and add footnotes\nfor index, annotation in enumerate(annotations):\n    # Replace the text with a footnote\n    message_content.value = message_content.value.replace(annotation.text, f' [{index}]')\n    # Gather citations based on annotation attributes\n    if (file_citation := getattr(annotation, 'file_citation', None)):\n        cited_file = client.files.retrieve(file_citation.file_id)\n        citations.append(f'[{index}] {file_citation.quote} from {cited_file.filename}')\n    elif (file_path := getattr(annotation, 'file_path', None)):\n        cited_file = client.files.retrieve(file_path.file_id)\n        citations.append(f'[{index}] Click <here> to download {cited_file.filename}')\n        # Note: File download functionality not implemented above for brevity\n# Add footnotes to the end of the message before displaying to user\nmessage_content.value += '\\n' + '\\n'.join(citations)\n```"
+    },
+    "73": {
+        "no": 73,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\n## Initiates a run for a specified assistant within a given thread.",
+        "code": "```python\nrun = client.beta.threads.runs.create(\n  thread_id=thread.id,\n  assistant_id=assistant.id\n)\n```"
+    },
+    "74": {
+        "no": 74,
+        "title": "assistants_deep_dive",
+        "subtitle": "assistants_deep_dive\n## Create a new run for a thread using specified assistant and tools.",
+        "code": "```python\nrun = client.beta.threads.runs.create(\n  thread_id=thread.id,\n  assistant_id=assistant.id,\n  model=\"gpt-4o\",\n  instructions=\"New instructions that override the Assistant instructions\",\n  tools=[{\"type\": \"code_interpreter\"}, {\"type\": \"file_search\"}]\n)\n```"
+    },
+    "75": {
+        "no": 75,
+        "title": "tools_file_search",
+        "subtitle": "tools_file_search\n## Creates an AI assistant specialized in financial analysis with file search capability.",
+        "code": "```python\nfrom openai import OpenAI\n\nclient = OpenAI()\n\nassistant = client.beta.assistants.create(\n  name=\"Financial Analyst Assistant\",\n  instructions=\"You are an expert financial analyst. Use you knowledge base to answer questions about audited financial statements.\",\n  model=\"gpt-4o\",\n  tools=[{\"type\": \"file_search\"}],\n)\n```"
+    },
+    "76": {
+        "no": 76,
+        "title": "tools_file_search",
+        "subtitle": "tools_file_search\nUpload financial documents to a vector store and monitor the upload status.",
+        "code": "```python\n# Create a vector store caled \"Financial Statements\"\nvector_store = client.beta.vector_stores.create(name=\"Financial Statements\")\n\n# Ready the files for upload to OpenAI\nfile_paths = [\"edgar/goog-10k.pdf\", \"edgar/brka-10k.txt\"]\nfile_streams = [open(path, \"rb\") for path in file_paths]\n\n# Use the upload and poll SDK helper to upload the files, add them to the vector store,\n# and poll the status of the file batch for completion.\nfile_batch = client.beta.vector_stores.file_batches.upload_and_poll(\n  vector_store_id=vector_store.id, files=file_streams\n)\n\n# You can print the status and the file counts of the batch to see the result of this operation.\nprint(file_batch.status)\nprint(file_batch.file_counts)\n```"
+    },
+    "77": {
+        "no": 77,
+        "title": "tools_file_search",
+        "subtitle": "tools_file_search\nUpdates the assistant's configuration to enable file search capabilities.",
+        "code": "```python\nassistant = client.beta.assistants.update(\n  assistant_id=assistant.id,\n  tool_resources={\"file_search\": {\"vector_store_ids\": [vector_store.id]}},\n)\n```"
+    },
+    "78": {
+        "no": 78,
+        "title": "tools_file_search",
+        "subtitle": "tools_file_search\nUpload a file to OpenAI and query its contents in a threaded conversation.",
+        "code": "```python\n# Upload the user provided file to OpenAI\nmessage_file = client.files.create(\n  file=open(\"edgar/aapl-10k.pdf\", \"rb\"), purpose=\"assistants\"\n)\n\n# Create a thread and attach the file to the message\nthread = client.beta.threads.create(\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": \"How many shares of AAPL were outstanding at the end of of October 2023?\",\n      # Attach the new file to the message.\n      \"attachments\": [\n        { \"file_id\": message_file.id, \"tools\": [{\"type\": \"file_search\"}] }\n      ],\n    }\n  ]\n)\n\n# The thread now has a vector store with that file in its tool resources.\nprint(thread.tool_resources.file_search)\n```"
+    },
+    "79": {
+        "no": 79,
+        "title": "tools_file_search",
+        "subtitle": "tools_file_search\n## Creates and polls a batch process for specified files in a vector store.",
+        "code": "```python\nbatch = client.beta.vector_stores.file_batches.create_and_poll(\n  vector_store_id=\"vs_abc123\",\n  file_ids=['file_1', 'file_2', 'file_3', 'file_4', 'file_5']\n)\n```"
+    }
+}

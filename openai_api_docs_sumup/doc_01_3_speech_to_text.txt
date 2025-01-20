@@ -1,0 +1,57 @@
+Using the prompt parameter
+The first method involves using the optional prompt parameter to pass a dictionary of the correct spellings.
+
+Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt.
+
+Prompt parameter
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+audio_file = open("/path/to/file/speech.mp3", "rb")
+transcription = client.audio.transcriptions.create(
+  model="whisper-1",
+  file=audio_file,
+  response_format="text",
+  prompt="ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T."
+)
+print(transcription.text)
+```
+
+While it will increase reliability, this technique is limited to only 244 characters so your list of SKUs would need to be relatively small in order for this to be a scalable solution.
+
+Post-processing with GPT-4
+The second method involves a post-processing step using GPT-4 or GPT-3.5-Turbo.
+
+We start by providing instructions for GPT-4 through the system_prompt variable.
+Similar to what we did with the prompt parameter earlier, we can define our company and product names.
+
+Post-processing
+
+```python
+system_prompt = "You are a helpful assistant for the company ZyntriQix.
+Your task is to correct any spelling discrepancies in the transcribed text.
+Make sure that the names of the following products are spelled correctly: ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T. Only add necessary punctuation such as periods, commas, and capitalization, and use only the context provided."
+
+def generate_corrected_transcript(temperature, system_prompt, audio_file):
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        temperature=temperature,
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": transcribe(audio_file, "")
+            }
+        ]
+    )
+    return completion.choices[0].message.content
+
+corrected_text = generate_corrected_transcript(0, system_prompt, fake_company_filepath)
+```
+
+If you try this on your own audio file, you can see that GPT-4 manages to correct many misspellings in the transcript. Due to its larger context window, this method might be more scalable than using Whisper's prompt parameter and is more reliable since GPT-4 can be instructed and guided in ways that aren't possible with Whisper given the lack of instruction following.
