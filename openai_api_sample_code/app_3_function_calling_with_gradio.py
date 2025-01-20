@@ -1,4 +1,4 @@
-# weatherAPI Todo - updating
+# weatherAPI
 import os
 import gradio as gr
 from openai import OpenAI
